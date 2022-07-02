@@ -6,6 +6,36 @@
     <groupId>io.github.noobdogcloud</groupId>
     <artifactId>JsonHelper</artifactId>
     <version>0.0.1</version>
+    <name>JsonHelper</name>
+    <description>NoobDogJson is a Java library based on JSON-simple project that can be used to convert Java Objects
+        into their JSON representation. It can also be used to convert a JSON string to an equivalent Java object.
+    </description>
+    <url>https://github.com/NoobDogCloud/NoobDogJson</url>
+    <licenses>
+        <license>
+            <name>Apache 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>putao520</id>
+            <name>putao520</name>
+            <email>yuyao1022@hotmail.com</email>
+            <organization>NoobDogCloud</organization>
+            <organizationUrl>https://github.com/NoobDogCloud</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+8</timezone>
+        </developer>
+    </developers>
+    <scm>
+        <url>https://github.com/NoobDogCloud/NoobDogJson</url>
+        <connection>https://github.com/NoobDogCloud/NoobDogJson.git</connection>
+        <developerConnection>https://github.com/NoobDogCloud/NoobDogJson.git</developerConnection>
+    </scm>
 
     <dependencies>
         <dependency>
