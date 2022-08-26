@@ -230,8 +230,8 @@ public class JSONValue {
                 ri = ((Float) val).intValue();
             } else if (val instanceof JSONObject) {
                 ri = ((JSONObject) val).getInt("$numberInt");
-            } else if (val instanceof String) {
-                ri = Double.valueOf((String) val).intValue();
+            } else if (val instanceof String s) {
+                ri = Integer.parseInt(s);
             } else if (val instanceof BigDecimal) {
                 ri = ((BigDecimal) val).intValue();
             } else if (val instanceof BigInteger) {
@@ -310,8 +310,8 @@ public class JSONValue {
                 ri = ((Float) val).longValue();
             } else if (val instanceof JSONObject) {
                 ri = ((JSONObject) val).getLong("$numberLong");
-            } else if (val instanceof String) {
-                ri = Long.getLong((String) val);
+            } else if (val instanceof String s) {
+                ri = Long.parseLong(s);
             } else if (val instanceof BigDecimal) {
                 ri = ((BigDecimal) val).longValue();
             } else if (val instanceof BigInteger) {
