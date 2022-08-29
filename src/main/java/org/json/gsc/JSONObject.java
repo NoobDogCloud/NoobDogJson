@@ -141,9 +141,11 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         } catch (Exception e) {
             rObject = null;
         }
+        /*
         if (rObject != null && rObject.size() == 0) {
             rObject = null;
         }
+        */
         return rObject;
     }
 
