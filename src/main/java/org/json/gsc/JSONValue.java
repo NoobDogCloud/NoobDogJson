@@ -329,23 +329,25 @@ public class JSONValue {
         try {
             ri = (boolean) val;
         } catch (Exception e) {
-            if (val instanceof String v) {
-                if (v.equals("0")) {
-                    ri = false;
-                } else if (v.equals("1")) {
-                    ri = true;
-                } else {
-                    ri = Boolean.parseBoolean(v);
-                }
-            } else if (val instanceof Long l) {
-                ri = l == 1L;
-            } else if (val instanceof Integer l) {
-                ri = l == 1;
-            } else {
-                ri = false;
-            }
+            ri = false;
         }
         return ri;
+    }
+
+    public static BigDecimal BigDecimalValue(String val) {
+        try {
+            return new BigDecimal(val);
+        } catch (Exception e) {
+            return BigDecimal.valueOf(0L);
+        }
+    }
+
+    public static BigInteger BigIntegerValue(String val) {
+        try {
+            return new BigInteger(val);
+        } catch (Exception e) {
+            return BigInteger.valueOf(0L);
+        }
     }
 
     public static JSONObject JsonValue(Object val) {

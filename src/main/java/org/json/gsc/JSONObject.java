@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class JSONObject extends HashMap<String, Object> implements Map<String, Object>, JSONAware, JSONStreamAware, IJSONObject<JSONObject> {
 
@@ -153,6 +154,9 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         return object == null || object.size() == 0;
     }
 
+    /**
+     * 所有继承自 HashMap 的结构转成 json
+     */
     public static <T extends HashMap> JSONObject convert(T in) {
         JSONObject myJson = new JSONObject();
         for (Object key : in.keySet()) {
@@ -240,6 +244,10 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
     }
 
     // object->json
+
+    /**
+     * Java对象转成json对象
+     */
     public static JSONObject mapper(Object o) {
         return mapper(o, true);
     }
@@ -273,6 +281,9 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         return escape(toString());
     }
 
+    /**
+     * 比较2个JSON是否一样（无视JSON对象排列乱序）
+     */
     public boolean compare(JSONObject json) {
         for (String key : keySet()) {
             if (!json.has(key)) {
@@ -285,6 +296,9 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         return true;
     }
 
+    /**
+     * 以 key 字段的值为新 key，构造 new-key: json 的新结构
+     */
     public JSONObject mapsByKey(String key) {
         JSONObject r = new JSONObject();
         for (Object v : values()) {
@@ -368,6 +382,14 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         return JSONValue.BooleanValue(get(key));
     }
 
+    public BigDecimal getBigDecimal(String key) {
+        return JSONValue.BigDecimalValue(getString(key));
+    }
+
+    public BigInteger getBigInteger(String key) {
+        return JSONValue.BigIntegerValue(getString(key));
+    }
+
     public JSONObject getJson(String key) {
         return JSONValue.JsonValue(get(key));
     }
@@ -376,6 +398,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         return put(key, escapeHtml(value));
     }
 
+    /*
     public Object getPkValue(String key) {
         Object val = getMongoID(key);
         if (val == null) {
@@ -391,7 +414,11 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         }
         return (String) val;
     }
+    */
 
+    /**
+     * 将field数组内容的第一条内容平铺到当前JSON
+     */
     public JSONObject link(String field) {
         return this.link(field, 0);
     }
@@ -401,6 +428,9 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 
     }
 
+    /**
+     * 获得不包含平铺字段的JSON
+     */
     public JSONObject base() {
         return base("#");
     }
@@ -415,6 +445,9 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         return newJson;
     }
 
+    /**
+     * 将 input json的字段连接上 groupName 后，写入当前json
+     */
     public JSONObject addGroup(String groupName, JSONObject input) {
         return addGroup(groupName, "#", input);
     }
@@ -426,6 +459,9 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         return this;
     }
 
+    /**
+     * 删除所有 groupName 的关联字段组
+     */
     public JSONObject removeGroup(String groupName, String spiltString) {
         JSONObject newJson = new JSONObject();
         for (String key : this.keySet()) {
@@ -437,6 +473,9 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         return newJson;
     }
 
+    /**
+     * 获得 groupName 字段对应的关联字段组
+     */
     public JSONObject groupBy(String groupName) {
         return groupBy(groupName, "#");
     }
@@ -493,14 +532,13 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
      * @param sourceData source json
      * @return a json
      */
-
     public JSONObject mapReplace(JSONObject sourceData) {
-        String localkey;
+        String localKey;
         for (String key : sourceData.keySet()) {
             if (mapTable.containsKey(key)) {
-                localkey = mapTable.get(key);
-                if (this.has(localkey)) {
-                    this.put(localkey, sourceData.get(key));
+                localKey = mapTable.get(key);
+                if (this.has(localKey)) {
+                    this.put(localKey, sourceData.get(key));
                 }
             }
             if (has(key)) {
@@ -523,19 +561,12 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         if (!JSONArray.isInvalided(rArray)) {
             JSONObject o = (JSONObject) rArray.get(idx);
             if (!isInvalided(o)) {
-
                 for (String key : o.keySet()) {
                     this.put(field + "#" + key, o.get(key));
                 }
-
             }
         }
         return this;
-    }
-
-    public boolean check(String k, Object v) {
-        Long _v = (v instanceof Integer) ? Long.valueOf(v.toString()) : (Long) v;
-        return has(k) && get(k).equals(_v);
     }
 
     private Object toMapperObject(Field field) {
@@ -578,7 +609,9 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         }
     }
 
-    // json->object
+    /**
+     * Json对象转Java对象
+     */
     public <T> T mapper(Class<T> cls) {
         Field[] fields = cls.getDeclaredFields();
         try {
@@ -657,6 +690,14 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
                     if (v != o.getDouble(key)) {
                         r.put(key);
                     }
+                } else if (v1 instanceof BigDecimal v) {
+                    if (v != o.getBigDecimal(key)) {
+                        r.put(key);
+                    }
+                } else if (v1 instanceof BigInteger v) {
+                    if (v != o.getBigInteger(key)) {
+                        r.put(key);
+                    }
                 } else if (!v1.equals(o.getString(key))) {
                     r.put(key);
                 }
@@ -667,5 +708,21 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
             }
         }
         return r;
+    }
+
+    /**
+     * json看做 tree, 依赖 hungField 字段为子节点组挂载字段依次遍历所有内容
+     */
+    public JSONObject forEachChildren(String hungField, Consumer<JSONObject> fn) {
+        fn.accept(this);
+        if (has(hungField)) {
+            JSONArray<JSONObject> arr = getJsonArray(hungField);
+            if (!JSONArray.isInvalided(arr)) {
+                for (JSONObject v : arr) {
+                    v.forEachChildren(hungField, fn);
+                }
+            }
+        }
+        return this;
     }
 }
