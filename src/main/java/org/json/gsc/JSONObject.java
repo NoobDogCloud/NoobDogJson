@@ -398,7 +398,6 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         return put(key, escapeHtml(value));
     }
 
-    /*
     public Object getPkValue(String key) {
         Object val = getMongoID(key);
         if (val == null) {
@@ -414,7 +413,6 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         }
         return (String) val;
     }
-    */
 
     /**
      * 将field数组内容的第一条内容平铺到当前JSON
