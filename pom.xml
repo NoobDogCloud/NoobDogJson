@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.noobdogcloud</groupId>
     <artifactId>JsonHelper</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <name>JsonHelper</name>
     <description>NoobDogJson is a Java library based on JSON-simple project that can be used to convert Java Objects
         into their JSON representation. It can also be used to convert a JSON string to an equivalent Java object.
