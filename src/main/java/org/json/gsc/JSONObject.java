@@ -7,7 +7,6 @@ package org.json.gsc;
 import org.json.gsc.parser.JSONParser;
 
 import java.io.IOException;
-import java.io.Serial;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
@@ -20,7 +19,6 @@ import java.util.function.Consumer;
 
 public class JSONObject extends HashMap<String, Object> implements Map<String, Object>, JSONAware, JSONStreamAware, IJSONObject<JSONObject> {
 
-    @Serial
     private static final long serialVersionUID = -503443796854799292L;
 
     private final HashMap<String, String> mapTable = new HashMap<>();
@@ -576,10 +574,10 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         // if value is Json
         if (v instanceof JSONObject) {
             return (type != JSONObject.class) ? ((JSONObject) v).mapper(field.getType()) : v;
-        } else if (v instanceof JSONArray jsonArray) {
+        } else if (v instanceof JSONArray) {
             if (type != JSONArray.class) {
                 List<Object> arrayList = new ArrayList<>();
-                for (Object i : jsonArray) {
+                for (Object i : (JSONArray) v) {
                     JSONObject item = (JSONObject) i;
                     arrayList.add(type.isPrimitive() ?
                             item :
@@ -667,33 +665,33 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         JSONArray<String> r = new JSONArray<>();
         for (String key : keySet()) {
             if (o.has(key)) {
-                var v1 = get(key);
+                Object v1 = get(key);
                 if (v1 == null) {
                     if (o.get(key) != null) {
                         r.put(key);
                     }
-                } else if (v1 instanceof Integer v) {
-                    if (v != o.getInt(key)) {
+                } else if (v1 instanceof Integer) {
+                    if ((int) v1 != o.getInt(key)) {
                         r.put(key);
                     }
-                } else if (v1 instanceof Long v) {
-                    if (v != o.getLong(key)) {
+                } else if (v1 instanceof Long) {
+                    if ((long) v1 != o.getLong(key)) {
                         r.put(key);
                     }
-                } else if (v1 instanceof Float v) {
-                    if (v != o.getFloat(key)) {
+                } else if (v1 instanceof Float) {
+                    if ((float) v1 != o.getFloat(key)) {
                         r.put(key);
                     }
-                } else if (v1 instanceof Double v) {
-                    if (v != o.getDouble(key)) {
+                } else if (v1 instanceof Double) {
+                    if ((double) v1 != o.getDouble(key)) {
                         r.put(key);
                     }
-                } else if (v1 instanceof BigDecimal v) {
-                    if (v != o.getBigDecimal(key)) {
+                } else if (v1 instanceof BigDecimal) {
+                    if (v1 != o.getBigDecimal(key)) {
                         r.put(key);
                     }
-                } else if (v1 instanceof BigInteger v) {
-                    if (v != o.getBigInteger(key)) {
+                } else if (v1 instanceof BigInteger) {
+                    if (v1 != o.getBigInteger(key)) {
                         r.put(key);
                     }
                 } else if (!v1.equals(o.getString(key))) {

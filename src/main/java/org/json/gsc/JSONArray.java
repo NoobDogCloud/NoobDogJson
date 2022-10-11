@@ -7,7 +7,6 @@ package org.json.gsc;
 import org.json.gsc.parser.JSONParser;
 
 import java.io.IOException;
-import java.io.Serial;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
@@ -16,7 +15,7 @@ import java.util.*;
 import java.util.function.Function;
 
 public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamAware {
-    @Serial
+
     private static final long serialVersionUID = 3957988303675231981L;
     private LinkedHashMap<Object, JSONArray<JSONObject>> groups;
 

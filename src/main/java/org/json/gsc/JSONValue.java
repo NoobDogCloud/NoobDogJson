@@ -174,6 +174,14 @@ public class JSONValue {
         return sb.toString();
     }
 
+    static String repeat(String str, int count) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            builder.append(str);
+        }
+        return builder.toString();
+    }
+
     static void escape(String s, StringBuffer sb) {
         final int len = s.length();
         for (int i = 0; i < len; i++) {
@@ -208,7 +216,8 @@ public class JSONValue {
                     if (ch <= '\u001F' || ch >= '\u007F' && ch <= '\u009F' || ch >= '\u2000' && ch <= '\u20FF') {
                         String ss = Integer.toHexString(ch);
                         sb.append("\\u");
-                        sb.append("0".repeat(4 - ss.length()));
+                        // sb.append("0".repeat(4 - ss.length()));
+                        sb.append(repeat("0", 4 - ss.length()));
                         sb.append(ss.toUpperCase());
                     } else {
                         sb.append(ch);
@@ -230,8 +239,8 @@ public class JSONValue {
                 ri = ((Float) val).intValue();
             } else if (val instanceof JSONObject) {
                 ri = ((JSONObject) val).getInt("$numberInt");
-            } else if (val instanceof String s) {
-                ri = Integer.parseInt(s);
+            } else if (val instanceof String) {
+                ri = Integer.parseInt((String) val);
             } else if (val instanceof BigDecimal) {
                 ri = ((BigDecimal) val).intValue();
             } else if (val instanceof BigInteger) {
@@ -310,8 +319,8 @@ public class JSONValue {
                 ri = ((Float) val).longValue();
             } else if (val instanceof JSONObject) {
                 ri = ((JSONObject) val).getLong("$numberLong");
-            } else if (val instanceof String s) {
-                ri = Long.parseLong(s);
+            } else if (val instanceof String) {
+                ri = Long.parseLong((String) val);
             } else if (val instanceof BigDecimal) {
                 ri = ((BigDecimal) val).longValue();
             } else if (val instanceof BigInteger) {

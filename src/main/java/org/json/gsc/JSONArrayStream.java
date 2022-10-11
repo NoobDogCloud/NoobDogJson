@@ -41,7 +41,7 @@ public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArr
         toWriter((out) -> {
             if (fn != null) {
                 prefixItem(out);
-                var s = this.deepClone();
+                JSONObjectStream s = this.deepClone();
                 fn.accept(s);
                 s.appendEnd();
             }
@@ -53,7 +53,7 @@ public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArr
         toWriter((out) -> {
             if (fn != null) {
                 prefixItem(out);
-                var s = this.<S>deepCloneToJSONArrayStream();
+                JSONArrayStream<S> s = this.deepCloneToJSONArrayStream();
                 fn.accept(s);
                 s.appendEnd();
             }
@@ -99,8 +99,8 @@ public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArr
 
     public JSONObjectStream getJsonStream(int idx) {
         Object value = get(idx);
-        if (value instanceof BigJsonValue bV) {
-            return new JSONObjectStream(file, bV);
+        if (value instanceof BigJsonValue) {
+            return new JSONObjectStream(file, (BigJsonValue) value);
         } else {
             return new JSONObjectStream(value);
         }
@@ -108,8 +108,8 @@ public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArr
 
     public <T> JSONArrayStream<T> getJsonArrayStream(int idx) {
         Object value = get(idx);
-        if (value instanceof BigJsonValue bV) {
-            return new JSONArrayStream<>(file, bV);
+        if (value instanceof BigJsonValue) {
+            return new JSONArrayStream<>(file, (BigJsonValue) value);
         } else {
             return new JSONArrayStream<>(value);
         }
@@ -147,8 +147,8 @@ public class JSONArrayStream<T> extends JsonStream implements IJSONArray<JSONArr
             } else {
                 throw new RuntimeException("JsonValue is a bigJsonValue,but fn is null");
             }
-        } else if (value instanceof String str) {
-            return str;
+        } else if (value instanceof String) {
+            return (String) value;
         } else {
             try {
                 return value.toString();

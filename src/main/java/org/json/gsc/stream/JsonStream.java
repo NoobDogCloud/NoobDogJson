@@ -70,7 +70,7 @@ public class JsonStream implements Closeable {
     protected BufferedWriter getWriter() {
         if (jos == null) {
             try {
-                var fos = new FileOutputStream(file, true);
+                FileOutputStream fos = new FileOutputStream(file, true);
                 if (file.length() > 0) {
                     fos.getChannel().write(ByteBuffer.wrap(new byte[]{(byte) '\n'}), file.length() - 1);
                 }
@@ -125,7 +125,7 @@ public class JsonStream implements Closeable {
     // ===Writer===================================================
     protected void toWriter(Consumer<BufferedWriter> fn) {
         try {
-            var bw = getWriter();
+            BufferedWriter bw = getWriter();
             written = true;
             fn.accept(bw);
             bw.flush();
@@ -137,7 +137,7 @@ public class JsonStream implements Closeable {
     // ===Reader===================================================
     protected <T> T toReader(Function<BufferedReader, T> fn) {
         T r = null;
-        var br = getReader();
+        BufferedReader br = getReader();
         try {
             if (bigJsonValue != null) {
                 // 跳到文件内容区域

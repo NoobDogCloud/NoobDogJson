@@ -51,7 +51,7 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
             toWriter((out) -> {
                 if (fn != null) {
                     putKey(key, out);
-                    var s = this.deepClone();
+                    JSONObjectStream s = this.deepClone();
                     fn.accept(s);
                     s.appendEnd();
                 }
@@ -65,7 +65,7 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
             toWriter((out) -> {
                 if (fn != null) {
                     putKey(key, out);
-                    var s = this.<T>deepCloneToJSONArrayStream();
+                    JSONArrayStream<T> s = this.deepCloneToJSONArrayStream();
                     fn.accept(s);
                     s.appendEnd();
                 }
@@ -172,8 +172,8 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
 
     public JSONObjectStream getJsonStream(String key) {
         Object value = get(key);
-        if (value instanceof BigJsonValue bV) {
-            return new JSONObjectStream(file, bV);
+        if (value instanceof BigJsonValue) {
+            return new JSONObjectStream(file, (BigJsonValue) value);
         } else {
             return new JSONObjectStream(value);
         }
@@ -181,8 +181,8 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
 
     public <T> JSONArrayStream<T> getJsonArrayStream(String key) {
         Object value = get(key);
-        if (value instanceof BigJsonValue bV) {
-            return new JSONArrayStream<>(file, bV);
+        if (value instanceof BigJsonValue) {
+            return new JSONArrayStream<>(file, (BigJsonValue) value);
         } else {
             return new JSONArrayStream<>(value);
         }
@@ -197,8 +197,8 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
         if (key.equals("_id") && value instanceof JSONObject && ((JSONObject) value).has("$oid")) {
             value = ((JSONObject) value).getString("$oid");
             return value == null ? "" : value.toString();
-        } else if (value instanceof String str) {
-            return str;
+        } else if (value instanceof String) {
+            return (String) value;
         } else if (value instanceof BigJsonValue) {
             if (fn != null) {
                 getBigJsonValueStream((BigJsonValue) value, fn);

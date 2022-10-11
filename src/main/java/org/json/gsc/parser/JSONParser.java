@@ -178,24 +178,28 @@ public class JSONParser {
                     case S_INIT:
                         switch (token.type) {
                             // 值
-                            case Yytoken.TYPE_VALUE -> {
+                            case Yytoken.TYPE_VALUE: {
                                 status = S_IN_FINISHED_VALUE;
                                 statusStack.addFirst(status);
                                 valueStack.addFirst(token.value);
+                                break;
                             }
                             // 左花括号 {
-                            case Yytoken.TYPE_LEFT_BRACE -> {
+                            case Yytoken.TYPE_LEFT_BRACE: {
                                 status = S_IN_OBJECT;
                                 statusStack.addFirst(status);
                                 valueStack.addFirst(createObjectContainer(containerFactory));
+                                break;
                             }
                             // 左中括号 [
-                            case Yytoken.TYPE_LEFT_SQUARE -> {
+                            case Yytoken.TYPE_LEFT_SQUARE: {
                                 status = S_IN_ARRAY;
                                 statusStack.addFirst(status);
                                 valueStack.addFirst(createArrayContainer(containerFactory));
+                                break;
                             }
-                            default -> status = S_IN_ERROR;
+                            default:
+                                status = S_IN_ERROR;
                         }//inner switch
                         break;
                     // 结束值
@@ -215,8 +219,8 @@ public class JSONParser {
                             case Yytoken.TYPE_COMMA:
                                 break;
                             case Yytoken.TYPE_VALUE:
-                                if (token.value instanceof String key) {
-                                    valueStack.addFirst(key);
+                                if (token.value instanceof String) {
+                                    valueStack.addFirst(token.value);
                                     status = S_PASSED_PAIR_KEY;
                                     statusStack.addFirst(status);
                                 } else {
@@ -436,25 +440,32 @@ public class JSONParser {
                         contentHandler.startJSON();
                         nextToken();
                         switch (token.type) {
-                            case Yytoken.TYPE_VALUE -> {
+                            case Yytoken.TYPE_VALUE: {
                                 status = S_IN_FINISHED_VALUE;
                                 statusStack.addFirst(status);
-                                if (!contentHandler.primitive(token.value))
+                                if (!contentHandler.primitive(token.value)) {
                                     return;
+                                }
+                                break;
                             }
-                            case Yytoken.TYPE_LEFT_BRACE -> {
+                            case Yytoken.TYPE_LEFT_BRACE: {
                                 status = S_IN_OBJECT;
                                 statusStack.addFirst(status);
-                                if (!contentHandler.startObject())
+                                if (!contentHandler.startObject()) {
                                     return;
+                                }
+                                break;
                             }
-                            case Yytoken.TYPE_LEFT_SQUARE -> {
+                            case Yytoken.TYPE_LEFT_SQUARE: {
                                 status = S_IN_ARRAY;
                                 statusStack.addFirst(status);
-                                if (!contentHandler.startArray())
+                                if (!contentHandler.startArray()) {
                                     return;
+                                }
+                                break;
                             }
-                            default -> status = S_IN_ERROR;
+                            default:
+                                status = S_IN_ERROR;
                         }//inner switch
                         break;
 
@@ -475,10 +486,10 @@ public class JSONParser {
                             case Yytoken.TYPE_COMMA:
                                 break;
                             case Yytoken.TYPE_VALUE:
-                                if (token.value instanceof String key) {
+                                if (token.value instanceof String) {
                                     status = S_PASSED_PAIR_KEY;
                                     statusStack.addFirst(status);
-                                    if (!contentHandler.startObjectEntry(key))
+                                    if (!contentHandler.startObjectEntry((String) token.value))
                                         return;
                                 } else {
                                     status = S_IN_ERROR;
