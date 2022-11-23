@@ -43,6 +43,15 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
         return (new JSONArray<T>()).put(s);
     }
 
+    public static JSONArray<String> buildBySpilt(String s) {
+        return buildBySpilt(s, "\n");
+    }
+
+    public static JSONArray<String> buildBySpilt(String s, String spilt) {
+        List<String> list = Arrays.asList(s.split(spilt));
+        return toJSONArray(list);
+    }
+
     private static String getAppend(int format) {
         if (format == 1) {
             return "\r\n";
@@ -532,6 +541,15 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
         return rs;
     }
 
+    public JSONArray<String> getJsonArrayBySpilt(int idx) {
+        return getJsonArrayBySpilt(idx, "\n");
+    }
+
+    public JSONArray<String> getJsonArrayBySpilt(int idx, String spilt) {
+        Object val = this.get(idx);
+        return JSONArray.buildBySpilt(val.toString(), spilt);
+    }
+
     public int getInt(int idx) {
         int r = 0;
         Object in = get(idx);
@@ -689,6 +707,10 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
         return this.joinOn(ownFieldName, foreignFieldName, foreignArray, false);
     }
 
+    public JSONArray<V> joinOn(String ownFieldName, String foreignFieldName, JSONArray foreignArray, boolean save_null_item) {
+        return this.joinOn(ownFieldName, foreignFieldName, foreignArray, save_null_item, false);
+    }
+
     public JSONArray<V> put(V obj) {
         add(obj);
         return this;
@@ -730,7 +752,14 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
         return super.contains(v);
     }
 
-    public JSONArray<V> joinOn(String ownFieldName, String foreignFieldName, JSONArray foreignArray, boolean save_null_item) {
+    /**
+     * @param ownFieldName     本地字段名
+     * @param foreignFieldName 外部字段名
+     * @param foreignArray     外部数组
+     * @param save_null_item   是否保存没有外部返回匹配的项
+     * @param save_broken_item 是否保存没有匹配的项
+     */
+    public JSONArray<V> joinOn(String ownFieldName, String foreignFieldName, JSONArray foreignArray, boolean save_null_item, boolean save_broken_item) {
         if (foreignArray == null) {
             this.clear();
         } else {
@@ -750,6 +779,9 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
             while (it.hasNext()) {
                 JSONObject item = (JSONObject) it.next();
                 if (!item.containsKey(ownFieldName)) {
+                    if (save_broken_item) {
+                        continue;
+                    }
                     it.remove();
                 } else {
                     List<String> keyValueArray = new ArrayList<>(Arrays.asList(item.getString(ownFieldName).split(",")));

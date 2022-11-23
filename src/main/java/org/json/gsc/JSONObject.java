@@ -421,7 +421,14 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
 
     public <T> JSONArray<T> getJsonArray(String key) {
         return JSONValue.JsonArrayValue(get(key));
+    }
 
+    public JSONArray<String> getJsonArrayBySpilt(String key) {
+        return getJsonArrayBySpilt(key, "\n");
+    }
+
+    public JSONArray<String> getJsonArrayBySpilt(String key, String spilt) {
+        return JSONArray.buildBySpilt(get(key).toString(), spilt);
     }
 
     /**
