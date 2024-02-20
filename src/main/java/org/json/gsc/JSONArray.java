@@ -679,6 +679,10 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
         writeJSONString(this, out, 0);
     }
 
+    public void writePrettyJSONString(Writer out) throws IOException {
+        writeJSONString(this, out, 1);
+    }
+
     @Override
     public String toString() {
         return toJSONString(this);

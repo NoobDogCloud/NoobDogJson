@@ -267,6 +267,10 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         writeJSONString(this, out, 0);
     }
 
+    public void writePrettyJSONString(Writer out) throws IOException {
+        writeJSONString(this, out, 1);
+    }
+
     public String toString() {
         return toJSONString(this);
     }
@@ -312,6 +316,16 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         return this;
     }
 
+    public JSONObject putWithArray(String key, Object value) {
+        JSONArray<Object> arr = getJsonArray(key);
+        if (arr == null) {
+            arr = JSONArray.build();
+        }
+        arr.put(value);
+        put(key, arr);
+        return this;
+    }
+
     public JSONObject putIfNotNull(Map<? extends String, ?> m) {
         if (m != null) {
             this.put(m);
@@ -327,7 +341,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
         return (value instanceof String) ? escape((String) value) : value;
     }
 
-    @Override
+    // @Override
     public JSONObject put(String key, Object value) {
         super.put(key, value);
         return this;
@@ -658,7 +672,7 @@ public class JSONObject extends HashMap<String, Object> implements Map<String, O
             }
             pro.put(key, obj2);
         }
-        return pro.size() > 0 ? pro : null;
+        return !pro.isEmpty() ? pro : null;
     }
 
     /**

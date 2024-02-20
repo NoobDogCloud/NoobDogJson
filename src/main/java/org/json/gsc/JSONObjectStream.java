@@ -122,9 +122,10 @@ public class JSONObjectStream extends JsonStream implements IJSONObject<JSONObje
             // 利用溢出时判断是否包含目标key,包含跳出解析（否则重用Map缓存）
             parser.onMapOverflow((map) -> map.get(key) != null);
             try {
-                cacheObject.put(
-                        (JSONObject) parser.parse(in, (ContainerFactory) null, true)
-                );
+                Object r = parser.parse(in, (ContainerFactory) null, true);
+                if (!JSONObject.isInvalided((JSONObject) r)) {
+                    cacheObject.put((JSONObject) r);
+                }
             } catch (IOException | ParseException e) {
                 e.printStackTrace();
             }
