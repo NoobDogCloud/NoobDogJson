@@ -692,6 +692,10 @@ public class JSONArray<V> extends ArrayList<V> implements JSONAware, JSONStreamA
         return toJSONString(this, 1);
     }
 
+    public Set toSet() {
+        return new HashSet(this);
+    }
+
     public JSONObject mapsByKey(String keyName) {
         JSONObject rJson = new JSONObject();
         forEach(item -> {
