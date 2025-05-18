@@ -334,11 +334,32 @@ public class JSONValue {
     }
 
     public static boolean BooleanValue(Object val) {
-        boolean ri;
-        try {
-            ri = (boolean) val;
-        } catch (Exception e) {
-            ri = false;
+        boolean ri = false;
+        // 判断 是否是数字,如果是 通过 1 0 来判断
+        if (val instanceof Integer) {
+            ri = (Integer) val == 1;
+        } else if (val instanceof Long) {
+            ri = (Long) val == 1;
+        } else if (val instanceof Double) {
+            ri = (Double) val == 1;
+        } else if (val instanceof Float) {
+            ri = (Float) val == 1;
+        } else if (val instanceof String) {
+            ri = "true".equalsIgnoreCase((String) val);
+        } else if (val instanceof JSONObject) {
+            ri = ((JSONObject) val).getBoolean("$boolean");
+        } else if (val instanceof Boolean) {
+            ri = (Boolean) val;
+        } else if (val instanceof BigDecimal) {
+            ri = ((BigDecimal) val).intValue() == 1;
+        } else if (val instanceof BigInteger) {
+            ri = ((BigInteger) val).intValue() == 1;
+        } else if (val instanceof Byte) {
+            ri = ((Byte) val).intValue() == 1;
+        } else if (val instanceof Short) {
+            ri = ((Short) val).intValue() == 1;
+        } else if (val instanceof Character) {
+            ri = (Character) val == '1';
         }
         return ri;
     }
